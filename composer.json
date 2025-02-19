@@ -1,0 +1,17 @@
+{
+    "name": "grachamite/polyterra",
+    "description": "Geometry functions to work with polygons",
+    "type": "library",
+    "license": "BSD-2-Clause",
+    "autoload": {
+        "psr-4": {
+            "Grachamite\\Polyterra\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Grachamite"
+        }
+    ],
+    "require": {}
+}
