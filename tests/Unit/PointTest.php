@@ -1,7 +1,8 @@
 <?php
 
-use Grachamite\Polyterra\exceptions\LatitudeValidationException;
-use Grachamite\Polyterra\exceptions\LongitudeValidationException;
+use Grachamite\Polyterra\exceptions\GeoErrors;
+use Grachamite\Polyterra\exceptions\GeoInitializeException;
+use Grachamite\Polyterra\exceptions\GeoValidationException;
 use Grachamite\Polyterra\geo\Point;
 
 
@@ -34,7 +35,7 @@ test('initializing point with latitude validation error', function (
 })->with([
     'incorrect latitiude in list' => [11.123456782, 12.12345678, false],
     'incorrect latitiude in array' => [211.12345678, 12.12345678, true],
-])->throws(LatitudeValidationException::class);
+])->throws(exception: GeoValidationException::class, exceptionCode: GeoErrors::LATITUDE_VALIDATION_ERROR->value);
 
 
 test('initializing point with longitude validation error', function (
@@ -48,5 +49,5 @@ test('initializing point with longitude validation error', function (
 })->with([
     'incorrect longitude in list' => [11.12345678, 12.123456782, false],
     'incorrect longitude in array' => [11.12345678, 212.12345678, true],
-])->throws(LongitudeValidationException::class);
+])->throws(exception: GeoValidationException::class, exceptionCode: GeoErrors::LONGITUDE_VALIDATION_ERROR->value);
 

@@ -2,11 +2,7 @@
 
 namespace Grachamite\Polyterra\geo;
 
-use Grachamite\Polyterra\exceptions\LatitudeValidationException;
-use Grachamite\Polyterra\exceptions\LongitudeValidationException;
-use Grachamite\Polyterra\exceptions\PointNotInitializedException;
-use Grachamite\Polyterra\exceptions\PointLatitudeNotInitializedException;
-use Grachamite\Polyterra\exceptions\PointLongitudeNotInitializedException;
+use Grachamite\Polyterra\exceptions\GeoErrors;
 use Grachamite\Polyterra\validations\GeoValidator;
 
 class Point
@@ -44,7 +40,7 @@ class Point
         // if point latitude not initialized,
         if ($this->isInitialized(['latitude']) === false ) {
             // then throw exception
-            throw new PointLatitudeNotInitializedException();
+            GeoErrors::POINT_LATITUDE_NOT_INITIALIZED->throw();
         } else {
             // else returning point latitude
             return $this->latitude;
@@ -62,7 +58,7 @@ class Point
             $this->latitude = (float) $latitude;
         } else {
             // else throw exception
-            throw new LatitudeValidationException();
+            GeoErrors::LATITUDE_VALIDATION_ERROR->throw();
         }
     }
 
@@ -71,7 +67,7 @@ class Point
         // if point longitude not initialized,
         if ($this->isInitialized(['longitude']) === false ) {
             // then throw exception
-            throw new PointLongitudeNotInitializedException();
+            GeoErrors::POINT_LONGITUDE_NOT_INITIALIZED->throw();
         } else {
             // else returning point longitude
             return $this->longitude;
@@ -89,7 +85,7 @@ class Point
             $this->longitude = (float) $longitude;
         } else {
             // else throw exception
-            throw new LongitudeValidationException();
+            GeoErrors::LONGITUDE_VALIDATION_ERROR->throw();
         }
     }
 
@@ -98,7 +94,7 @@ class Point
         // if point not initialized (empty latitude, or longitude, or both),
         if ($this->isInitialized() === false ) {
             // then throw exception
-            throw new PointNotInitializedException();
+            GeoErrors::POINT_NOT_INITIALIZED->throw();
         } else {
             // else return coordinates
             return [$this->latitude, $this->longitude];
@@ -119,7 +115,7 @@ class Point
             // then taking coordinates from list
             [$latitude, $longitude] = array_values($arguments);
         } else {
-            throw new LatitudeValidationException();
+            GeoErrors::LATITUDE_VALIDATION_ERROR->throw();
         }
 
         // setting up coordinates for point
