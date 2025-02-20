@@ -10,6 +10,7 @@ enum GeoErrors: int
     case POINT_LATITUDE_NOT_INITIALIZED = 30;
     case POINT_LONGITUDE_NOT_INITIALIZED = 40;
     case POINT_NOT_INITIALIZED = 50;
+    case INCORRECT_POINT_INITIALIZATION_ARGUMENT = 60;
 
     public function throw(): void
     {
@@ -37,6 +38,10 @@ enum GeoErrors: int
             GeoErrors::POINT_NOT_INITIALIZED => throw new GeoInitializeException(
                 message: 'Point not initialized',
                 code: GeoErrors::POINT_NOT_INITIALIZED->value
+            ),
+            GeoErrors::INCORRECT_POINT_INITIALIZATION_ARGUMENT => throw new GeoValidationException(
+                message: 'Incorrect point initialization argument',
+                code: GeoErrors::INCORRECT_POINT_INITIALIZATION_ARGUMENT->value
             ),
         };
     }

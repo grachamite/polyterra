@@ -1,7 +1,6 @@
 <?php
 
 use Grachamite\Polyterra\exceptions\GeoErrors;
-use Grachamite\Polyterra\exceptions\GeoInitializeException;
 use Grachamite\Polyterra\exceptions\GeoValidationException;
 use Grachamite\Polyterra\geo\Point;
 
@@ -51,3 +50,10 @@ test('initializing point with longitude validation error', function (
     'incorrect longitude in array' => [11.12345678, 212.12345678, true],
 ])->throws(exception: GeoValidationException::class, exceptionCode: GeoErrors::LONGITUDE_VALIDATION_ERROR->value);
 
+test('initializing point with argument validation error', function (
+    mixed $argument
+) {
+    new Point(...$argument);
+})->with([
+    'odd coordinates count in list' => [[11.12345678, 12.123456782, 13.123456782]],
+])->throws(exception: GeoValidationException::class, exceptionCode: GeoErrors::INCORRECT_POINT_INITIALIZATION_ARGUMENT->value);

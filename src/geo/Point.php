@@ -106,16 +106,17 @@ class Point
         // taking all function arguments
         $arguments = func_get_args();
 
+        $argumentsType = GeoValidator::getCoordinatesType($arguments);
         // if coordinates in array,
-        if (isset($arguments[0]) && is_array($arguments[0]) && count($arguments[0]) >= 2) {
+        if ($argumentsType === GeoValidator::COORDINATES_IN_ARRAY) {
             // then taking latitude and longitude from array
             [$latitude, $longitude] = array_values($arguments[0]);
             // else if coordinates in list,
-        } elseif (isset($arguments[0], $arguments[1])) {
+        } elseif ($argumentsType === GeoValidator::COORDINATES_IN_LIST) {
             // then taking coordinates from list
             [$latitude, $longitude] = array_values($arguments);
         } else {
-            GeoErrors::LATITUDE_VALIDATION_ERROR->throw();
+            GeoErrors::INCORRECT_POINT_INITIALIZATION_ARGUMENT->throw();
         }
 
         // setting up coordinates for point
