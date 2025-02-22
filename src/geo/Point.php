@@ -9,6 +9,14 @@ class Point
 {
     private ?float $latitude = null;
     private ?float $longitude = null;
+
+    private ?float $latitudeInRadians = null;
+    private ?float $longitudeInRadians = null;
+
+    private ?float $cosLatitude = null;
+    private ?float $sinLatitude = null;
+
+
     const ALLOWED_INIT_PARAMS = [
         'latitude',
         'longitude'
@@ -35,70 +43,126 @@ class Point
         return $isInitialized > 0;
     }
 
-    public function getLatitude(): float
+    public function getLatitude(bool $inRadians = false): float
     {
-        // if point latitude not initialized,
+        // If point latitude not initialized,
         if ($this->isInitialized(['latitude']) === false ) {
-            // then throw exception
+            // Then throw exception
             GeoErrors::POINT_LATITUDE_NOT_INITIALIZED->throw();
         } else {
-            // else returning point latitude
-            return $this->latitude;
+            // Else calculate latitude in radians (if it is not yet calculated)
+            if ($inRadians && empty($this->latitudeInRadians)) {
+                $this->latitudeInRadians = $this->latitude * pi() / 180;
+            }
+
+            // And returning point latitude in radians or in degrees
+            return $inRadians ? $this->latitudeInRadians : $this->latitude;
         }
+    }
+
+    public function getCosLatitude(): float
+    {
+        // Calculate cos latitude (if it is not yet calculated)
+        if (empty($this->cosLatitude)) {
+            $this->cosLatitude = cos($this->getLatitude(inRadians: true));
+        }
+
+        // Returning cos latitude
+        return $this->cosLatitude;
+    }
+
+    public function getSinLatitude(): float
+    {
+        // Calculate sin latitude (if it is not yet calculated)
+        if (empty($this->sinLatitude)) {
+            $this->sinLatitude = sin($this->getLatitude(inRadians: true));
+        }
+
+        // Returning sin latitude
+        return $this->sinLatitude;
     }
 
     public function setLatitude(mixed $latitude)
     {
-        // validating latitude
+        // Validating latitude
         $validate = GeoValidator::isLatitude($latitude);
 
-        // if latitude validated,
+        // If latitude validated,
         if ($validate === true) {
-            // then setting up latitude to point
+            // Then unsetting latitude values
+            $this->unsetLatitude();
+            // And setting up latitude to point
             $this->latitude = (float) $latitude;
         } else {
-            // else throw exception
+            // Else throw exception
             GeoErrors::LATITUDE_VALIDATION_ERROR->throw();
         }
     }
 
-    public function getLongitude(): float
+    private function unsetLatitude(): void
     {
-        // if point longitude not initialized,
+        unset(
+            $this->latitude,
+            $this->latitudeInRadians,
+            $this->cosLatitude,
+            $this->sinLatitude
+        );
+    }
+
+    public function getLongitude(bool $inRadians = false): float
+    {
+        // If point longitude not initialized,
         if ($this->isInitialized(['longitude']) === false ) {
-            // then throw exception
+            // Then throw exception
             GeoErrors::POINT_LONGITUDE_NOT_INITIALIZED->throw();
         } else {
-            // else returning point longitude
-            return $this->longitude;
+            // Else calculate longitude in radians (if it is not yet calculated)
+            if ($inRadians && empty($this->longitudeInRadians)) {
+                $this->longitudeInRadians = $this->longitude * pi() / 180;
+            }
+
+            // And returning point longitude in radians or in degrees
+            return $inRadians ? $this->longitudeInRadians : $this->longitude;
         }
     }
 
-    public function setLongitude(mixed $longitude)
+    public function setLongitude(mixed $longitude): void
     {
-        // validating longitude
+        // Validating longitude
         $validate = GeoValidator::isLongitude($longitude);
 
-        // if longitude validated,
+        // If longitude validated,
         if ($validate === true) {
-            // then setting up longitude to point
+            // Then unsetting longitude values
+            $this->unsetLongitude();
+            // And setting up longitude to point
             $this->longitude = (float) $longitude;
         } else {
-            // else throw exception
+            // Else throw exception
             GeoErrors::LONGITUDE_VALIDATION_ERROR->throw();
         }
     }
 
-    public function getCoordinates(): array
+    private function unsetLongitude(): void
     {
-        // if point not initialized (empty latitude, or longitude, or both),
-        if ($this->isInitialized() === false ) {
-            // then throw exception
+        unset(
+            $this->longitude,
+            $this->longitudeInRadians
+        );
+    }
+
+    public function getCoordinates(bool $inRadians = false): array
+    {
+        try {
+            $coordinates = [$this->getLatitude($inRadians), $this->getLongitude($inRadians)];
+        } catch (\Exception $exception) {
+            // then throw exception for point initialization
             GeoErrors::POINT_NOT_INITIALIZED->throw();
-        } else {
-            // else return coordinates
-            return [$this->latitude, $this->longitude];
         }
+
+        // else return coordinates
+        return $coordinates;
+
     }
 
     public function setCoordinates()
