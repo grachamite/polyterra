@@ -15,6 +15,8 @@ class Point
 
     private ?float $cosLatitude = null;
     private ?float $sinLatitude = null;
+    private ?float $cosLongitude = null;
+    private ?float $sinLongitude = null;
 
 
     const ALLOWED_INIT_PARAMS = [
@@ -105,7 +107,7 @@ class Point
             $this->latitude,
             $this->latitudeInRadians,
             $this->cosLatitude,
-            $this->sinLatitude
+            $this->sinLatitude,
         );
     }
 
@@ -126,6 +128,28 @@ class Point
         }
     }
 
+    public function getCosLongitude(): float
+    {
+        // Calculate cos longitude (if it is not yet calculated)
+        if (empty($this->cosLongitude)) {
+            $this->cosLongitude = cos($this->getLongitude(inRadians: true));
+        }
+
+        // Returning cos longitude
+        return $this->cosLongitude;
+    }
+
+    public function getSinLongitude(): float
+    {
+        // Calculate sin longitude (if it is not yet calculated)
+        if (empty($this->sinLongitude)) {
+            $this->sinLongitude = sin($this->getLongitude(inRadians: true));
+        }
+
+        // Returning sin longitude
+        return $this->sinLongitude;
+    }
+
     public function setLongitude(mixed $longitude): void
     {
         // Validating longitude
@@ -143,11 +167,14 @@ class Point
         }
     }
 
+
     private function unsetLongitude(): void
     {
         unset(
             $this->longitude,
-            $this->longitudeInRadians
+            $this->longitudeInRadians,
+            $this->cosLongitude,
+            $this->sinLongitude,
         );
     }
 

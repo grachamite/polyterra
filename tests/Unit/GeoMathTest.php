@@ -15,3 +15,17 @@ test('distance in km between', function (array $startPoint, array $endPoint , fl
     'from New-York to Rio de Janeiro' => [[40.714627, -74.002863], [-22.905722, -43.189130], 7760.475],
 ]);
 
+test('triangle area', function (array $aPoint, array $bPoint, array $cPoint, float $expected) {
+    $actual = GeoMath::triangleArea(
+        [
+            new Point($aPoint), new Point($bPoint), new Point($cPoint)
+        ]
+    );
+
+    $this->assertEquals($expected, $actual);
+})->with([
+    'New-York - London - Paris' => [[40.712800, -74.006000], [51.5074, -0.1278], [48.8566, 2.3522], 661458.136],
+    'inside Saint-Petersburg' => [[59.945966, 30.235982], [59.947068, 30.283849], [59.933070, 30.252225], 1.976],
+    'inside Murmansk' => [[68.975403, 33.066749], [68.956774, 33.055287], [68.961764, 33.105204], 1.93],
+]);
+

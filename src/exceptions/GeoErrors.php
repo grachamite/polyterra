@@ -11,6 +11,7 @@ enum GeoErrors: int
     case POINT_LONGITUDE_NOT_INITIALIZED = 40;
     case POINT_NOT_INITIALIZED = 50;
     case INCORRECT_POINT_INITIALIZATION_ARGUMENT = 60;
+    case POLYGON_NOT_INITIALIZED = 70;
 
     public function throw(): void
     {
@@ -42,6 +43,10 @@ enum GeoErrors: int
             GeoErrors::INCORRECT_POINT_INITIALIZATION_ARGUMENT => throw new GeoValidationException(
                 message: 'Incorrect point initialization argument',
                 code: GeoErrors::INCORRECT_POINT_INITIALIZATION_ARGUMENT->value
+            ),
+            GeoErrors::POLYGON_NOT_INITIALIZED => throw new GeoInitializeException(
+                message: 'Polygon not initialized',
+                code: GeoErrors::POLYGON_NOT_INITIALIZED->value
             ),
         };
     }
